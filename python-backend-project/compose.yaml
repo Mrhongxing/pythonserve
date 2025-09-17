@@ -1,0 +1,38 @@
+name:wanghong
+services:
+  mysql:
+    container_name: wanghong_mysql
+    imange: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD: 123456789
+      - MYSQL_DATABASE: wordpress
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql_config:/etc/mysql/conf.d
+    restart: always
+    networks:
+      - wanghong_network
+
+  wordpress:
+    iamage: wordpress:latest
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: 123456789
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wordpress_data:/var/www/html
+    ports:
+      - "8080:80"
+    restart: always
+    networks:
+      - wanghong_network
+    depends_on:
+      - mysql
+valumes:
+  mysql_data:
+  wordpress_data:
+networks:
+  wanghong_network:
